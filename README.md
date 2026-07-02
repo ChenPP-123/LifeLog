@@ -4,5 +4,7 @@
 
 ## Features
 
-- Task Management（后续实现）
+- Task Management
+    - add task
+    - list task
 - Diary（后续实现）
