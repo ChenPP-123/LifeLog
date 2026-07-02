@@ -3,15 +3,11 @@ from task import Task
 
 class TaskManager:
     def __init__(self):
-        self.taskList = []
+        self.task_list = []
 
     def show_list(self):
-        for n, t in enumerate(self.taskList, start=1):
-            print(f"{n}. {t.title}")
-            print()
+        return enumerate(self.task_list, start=1)
 
-    def add_task(self):
-        inpu = input("Task title:\n")
-        task = Task(inpu)
-        self.taskList.append(task)
-        print("Task added.\n")
+    def add_task(self, title):
+        task = Task(title)
+        self.task_list.append(task)
