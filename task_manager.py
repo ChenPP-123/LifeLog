@@ -1,13 +1,29 @@
 from task import Task
+import json
+import os
 
 
 class TaskManager:
     def __init__(self):
-        self.task_list = []
+        self.file_name = "tasks.json"
 
-    def show_list(self):
-        return enumerate(self.task_list, start=1)
+        if not os.path.exists(self.file_name) or os.path.getsize(self.file_name) == 0:
+            with open("tasks.json", "w") as t:
+                json.dump([], t)
 
     def add_task(self, title):
         task = Task(title)
-        self.task_list.append(task)
+
+        with open(self.file_name, "r") as t:
+            data = json.load(t)
+
+        data.append({"title": task.title, "completed": task.completed})
+
+        with open(self.file_name, "w") as t:
+            json.dump(data, t, indent=4)
+
+    def show_list(self):
+        with open(self.file_name, "r") as t:
+            data = json.load(t)
+
+        return enumerate(data, start=1)
