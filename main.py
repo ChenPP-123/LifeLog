@@ -17,8 +17,8 @@ if __name__ == "__main__":
                 task_manager.add_task(title := input("Task title:\n"))
                 print("Task added.\n")
             case 2:
-                task_list = task_manager.show_list()
-                for n, t in task_list:
+                task_list = task_manager.list_tasks()
+                for n, t in enumerate(task_list, start=1):
                     print(f"{n}. {t.title}")
                 print()
             case 3:
