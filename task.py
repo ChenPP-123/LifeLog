@@ -9,3 +9,6 @@ class Task:
     @classmethod
     def from_dict(cls, data):
         return cls(data["title"], data["completed"])
+
+    def change_status(self):
+        self.completed = True if not self.completed else False
