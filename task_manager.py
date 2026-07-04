@@ -22,5 +22,5 @@ class TaskManager:
 
     def delete_task(self, index):
         data = self.storage.load()
-        data.remove(data[index - 1])
+        del data[index - 1]
         self.storage.save(data)

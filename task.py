@@ -11,4 +11,4 @@ class Task:
         return cls(data["title"], data["completed"])
 
     def change_status(self):
-        self.completed = True if not self.completed else False
+        self.completed = not self.completed
