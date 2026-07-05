@@ -4,8 +4,8 @@ import os
 
 
 class Storage:
-    def __init__(self):
-        self.filename = "tasks.json"
+    def __init__(self,filename):
+        self.filename = filename
 
         if not os.path.exists(self.filename) or os.path.getsize(self.filename) == 0:
             with open(self.filename, "w") as t:

@@ -4,7 +4,7 @@ from storage import Storage
 
 class TaskManager:
     def __init__(self):
-        self.storage = Storage()
+        self.storage = Storage("tasks.json")
 
     def add_task(self, title):
         data = self.storage.load()
