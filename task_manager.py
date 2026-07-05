@@ -1,10 +1,9 @@
 from task import Task
-from storage import Storage
 
 
 class TaskManager:
-    def __init__(self):
-        self.storage = Storage("tasks.json")
+    def __init__(self, storage):
+        self.storage = storage
 
     def add_task(self, title):
         data = self.storage.load()
@@ -17,10 +16,18 @@ class TaskManager:
 
     def mark_task(self, index):
         data = self.storage.load()
-        data[index - 1].change_status()
-        self.storage.save(data)
+        if 1 <= index <= len(data):
+            data[index - 1].change_status()
+            self.storage.save(data)
+            return True
+        else:
+            return False
 
     def delete_task(self, index):
         data = self.storage.load()
-        del data[index - 1]
-        self.storage.save(data)
+        if 1 <= index <= len(data):
+            del data[index - 1]
+            self.storage.save(data)
+            return True
+        else:
+            return False
