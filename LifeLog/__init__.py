@@ -1,0 +1,3 @@
+"""
+LifeLog package.
+"""

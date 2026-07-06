@@ -1,5 +1,10 @@
 __pycache__/
 *.py[cod]
+
 .venv/
+
+.pytest_cache/
+
 tasks.json
+
 .DS_Store

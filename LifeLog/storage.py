@@ -1,10 +1,10 @@
-from task import Task
+from .task import Task
 import json
 import os
 
 
 class Storage:
-    def __init__(self,filename):
+    def __init__(self, filename):
         self.filename = filename
 
         if not os.path.exists(self.filename) or os.path.getsize(self.filename) == 0:

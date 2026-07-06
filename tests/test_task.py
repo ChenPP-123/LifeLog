@@ -1,4 +1,4 @@
-from task import Task
+from lifelog.task import Task
 
 
 def test_todict():
