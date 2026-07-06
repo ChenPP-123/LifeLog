@@ -8,10 +8,11 @@ class Cli:
         self.commands = {
             1: ("Show menu", self._show_menu),
             2: ("Add task", self._add_task),
-            3: ("list_tasks", self._list_tasks),
-            4: ("Finish/Unfinish task", self._mark_task),
-            5: ("Delete", self._delete),
-            6: ("Exit", self._exit),
+            3: ("Rename task", self._rename_task),
+            4: ("list_tasks", self._list_tasks),
+            5: ("Finish/Unfinish task", self._mark_task),
+            6: ("Delete", self._delete),
+            7: ("Exit", self._exit),
         }
 
     def _show_menu(self):
@@ -23,6 +24,20 @@ class Cli:
     def _add_task(self):
         self.manager.add_task(title := input("Task title:\n"))
         print("Task added.\n")
+
+    def _rename_task(self):
+        while True:
+            inpu = input("Enter task index:")
+            try:
+                inpu = int(inpu)
+            except ValueError:
+                print("Please input a number.")
+                continue
+
+            new_title = input("Enter the new title of the task:")
+            if self.manager.rename_task(inpu, new_title):
+                print("Done.\n")
+                break
 
     def _list_tasks(self):
         task_list = self.manager.list_tasks()
@@ -78,6 +93,7 @@ class Cli:
             except ValueError:
                 print("Please input a number.")
                 continue
+
             command = self.commands.get(inpu)
             if command:
                 command[-1]()

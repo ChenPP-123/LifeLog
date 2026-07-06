@@ -11,6 +11,15 @@ class TaskManager:
         data.append(task)
         self.storage.save(data)
 
+    def rename_task(self, index, new_title):
+        data = self.storage.load()
+        if 1 <= index <= len(data):
+            data[index - 1].rename(new_title)
+            self.storage.save(data)
+            return True
+        else:
+            return False
+
     def list_tasks(self):
         return self.storage.load()
 

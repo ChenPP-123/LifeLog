@@ -12,3 +12,6 @@ class Task:
 
     def change_status(self):
         self.completed = not self.completed
+
+    def rename(self, new_name):
+        self.title = new_name
