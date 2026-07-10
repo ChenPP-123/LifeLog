@@ -21,7 +21,8 @@ class TaskManager:
             return False
 
     def list_tasks(self):
-        return self.storage.load()
+        for i, t in enumerate(self.storage.load(), start=1):
+            print(f"{i} {'[ ]' if not t.completed else '[*]'} {t.title}")
 
     def mark_task(self, index):
         data = self.storage.load()

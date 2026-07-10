@@ -14,4 +14,4 @@
 ## Supplementary Explanation
 
 - All data is kept in a json file.
-- Exception handling for user's input
+- Conforms to the usage habits of terminal tools
