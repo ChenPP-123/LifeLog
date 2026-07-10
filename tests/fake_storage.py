@@ -1,9 +1,9 @@
 class FakeStorage:
     def __init__(self):
-        self.task_list = []
+        self.data = {"tasks": [], "logs": []}
 
     def load(self):
-        return self.task_list
+        return self.data
 
     def save(self, data):
-        self.task_list = data
+        self.data = data

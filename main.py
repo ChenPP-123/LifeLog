@@ -1,7 +1,7 @@
 import argparse
 
 
-from lifelog.task_manager import TaskManager
+from lifelog.manager import TaskManager
 from lifelog.storage import Storage
 
 

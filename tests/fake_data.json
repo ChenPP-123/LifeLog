@@ -1,0 +1,26 @@
+{
+    "tasks": [
+        {
+            "title": "test task 1",
+            "completed": false
+        },
+        {
+            "title": "test task 2",
+            "completed": true
+        }
+    ],
+    "logs": [
+        {
+            "time": "2026-7-10",
+            "content": "this is a test log."
+        },
+        {
+            "time": "2020-7-11",
+            "content": "this is also a test log."
+        },
+        {
+            "time": "2020-7-12",
+            "content": "this is still a test log."
+        }
+    ]
+}

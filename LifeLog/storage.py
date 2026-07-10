@@ -1,21 +1,29 @@
 from .task import Task
+from .log import Log
 import json
 import os
 
 
 class Storage:
-    def __init__(self, filename):
+    def __init__(self, filename: str):
         self.filename = filename
+        self.MODEL_MAP = {"tasks": Task, "logs": Log}
 
         if not os.path.exists(self.filename) or os.path.getsize(self.filename) == 0:
             with open(self.filename, "w") as t:
-                json.dump([], t)
+                json.dump({"tasks": [], "logs": []}, t, indent=4)
 
     def load(self):
-        with open(self.filename, "r") as t:
-            return [Task.from_dict(i) for i in json.load(t)]
+        with open(self.filename, "r") as d:
+            raw_data = json.load(d)
+        data = {}
+        for key, cls in self.MODEL_MAP.items():
+            data[key] = [cls.from_dict(i) for i in raw_data.get(key, [])]
+        return data
 
-    def save(self, data):
-        with open(self.filename, "w") as t:
-            tasks = [i.to_dict() for i in data]
-            json.dump(tasks, t, indent=4)
+    def save(self, data: dict):
+        j_data = {}
+        for key in self.MODEL_MAP.keys():
+            j_data[key] = [i.to_dict for i in data.get(key, [])]
+        with open(self.filename, "w") as d:
+            json.dump(j_data, d, indent=4)
