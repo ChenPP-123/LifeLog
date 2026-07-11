@@ -1,6 +1,6 @@
 # LifeLog
 
-LifeLog 是一个基于 Python 的终端任务与日志管理工具。
+这是我自己动手开发的第一个python项目：LifeLog 是一个基于 Python 的终端任务与日志管理工具。
 
 它目前提供两类能力：
 
