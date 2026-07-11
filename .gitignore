@@ -8,3 +8,7 @@ __pycache__/
 data.json
 
 .DS_Store
+
+.vscode/
+
+.idea/

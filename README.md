@@ -17,3 +17,11 @@
 
 - All data is kept in a json file.
 - Conforms to the usage habits of major terminal tools
+
+## How to config
+
+- clone this project to you PC
+- run this command:
+```shell
+pip install -r requirements.txt
+```
