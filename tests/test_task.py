@@ -1,17 +1,37 @@
 from lifelog.task import Task
 
 
-def test_to_dict():
-    task = Task("this is a test task")
-    re = task.to_dict()
+def test_task_defaults_to_incomplete():
+    task = Task("write tests")
 
-    assert type(re) is dict
-    assert re["title"] == task.title
-    assert re["completed"] is False
+    assert task.title == "write tests"
+    assert task.completed is False
 
 
-def test_from_dict():
-    data = {"title": "test task", "completed": False}
-    task = Task.from_dict(data)
+def test_task_round_trip_preserves_state():
+    task = Task("write tests", completed=True)
 
-    assert type(task) is Task
+    data = task.to_dict()
+    rebuilt = Task.from_dict(data)
+
+    assert data == {"title": "write tests", "completed": True}
+    assert rebuilt.title == task.title
+    assert rebuilt.completed is True
+
+
+def test_change_status_toggles_completion():
+    task = Task("write tests")
+
+    task.change_status()
+    assert task.completed is True
+
+    task.change_status()
+    assert task.completed is False
+
+
+def test_rename_updates_title():
+    task = Task("old title")
+
+    task.rename("new title")
+
+    assert task.title == "new title"
