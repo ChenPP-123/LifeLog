@@ -10,8 +10,8 @@ class Storage:
         self.MODEL_MAP = {"tasks": Task, "logs": Log}
 
         if not os.path.exists(self.filename) or os.path.getsize(self.filename) == 0:
-            with open(self.filename, "w") as t:
-                json.dump({"tasks": [], "logs": []}, t, indent=4)
+            with open(self.filename, "w") as d:
+                json.dump({"tasks": [], "logs": []}, d, indent=4)
 
     def load(self):
         with open(self.filename, "r") as d:
@@ -24,6 +24,6 @@ class Storage:
     def save(self, data: dict):
         j_data = {}
         for key in self.MODEL_MAP.keys():
-            j_data[key] = [i.to_dict for i in data.get(key, [])]
+            j_data[key] = [i.to_dict() for i in data.get(key, [])]
         with open(self.filename, "w") as d:
             json.dump(j_data, d, indent=4)

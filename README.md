@@ -9,9 +9,11 @@
     - list task
     - mark task done
     - delete task
-- Diary（后续实现）
+- Log system
+    - add log
+    - show existing logs
 
 ## Supplementary Explanation
 
 - All data is kept in a json file.
-- Conforms to the usage habits of terminal tools
+- Conforms to the usage habits of major terminal tools

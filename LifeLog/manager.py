@@ -53,5 +53,5 @@ class LogManager:
         data["logs"].append(log)
         self.storage.save(data)
 
-    def show_log(self):
+    def show_logs(self):
         return self.storage.load()["logs"]
