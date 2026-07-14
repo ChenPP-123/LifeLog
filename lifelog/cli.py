@@ -1,3 +1,6 @@
+from .manager import EMPTY_TEXT_ERROR, INVALID_INDEX_ERROR
+
+
 class Cli:
     def __init__(self, task_manager, log_manager):
         self.task_manager = task_manager
@@ -18,14 +21,26 @@ class Cli:
             command(args)
 
     def _add_task(self, args):
-        self.task_manager.add_task(args.title)
-        print("Done.")
+        try:
+            self.task_manager.add_task(args.title)
+            print("Done.")
+        except ValueError as error:
+            if str(error) == EMPTY_TEXT_ERROR:
+                print("Empty title.")
+            else:
+                raise
 
     def _rename_task(self, args):
-        if self.task_manager.rename_task(args.index, args.new_title):
+        try:
+            self.task_manager.rename_task(args.index, args.new_title)
             print("Done.")
-        else:
-            print("No such task.")
+        except ValueError as error:
+            if str(error) == INVALID_INDEX_ERROR:
+                print("Invalid index.")
+            elif str(error) == EMPTY_TEXT_ERROR:
+                print("Empty title.")
+            else:
+                raise
 
     def _list_tasks(self, args):
         for i, t in enumerate(self.task_manager.list_tasks(), start=1):
@@ -33,20 +48,34 @@ class Cli:
         print()
 
     def _mark_task(self, args):
-        if self.task_manager.mark_task(args.index):
+        try:
+            self.task_manager.mark_task(args.index)
             print("Done.")
-        else:
-            print("No such task.")
+        except ValueError as error:
+            if str(error) == INVALID_INDEX_ERROR:
+                print("Invalid index.")
+            else:
+                raise
 
     def _delete_task(self, args):
-        if self.task_manager.delete_task(args.index):
+        try:
+            self.task_manager.delete_task(args.index)
             print("Done.")
-        else:
-            print("No such task.")
+        except ValueError as error:
+            if str(error) == INVALID_INDEX_ERROR:
+                print("Invalid index.")
+            else:
+                raise
 
     def _add_log(self, args):
-        self.log_manager.add_log(args.content)
-        print("Done.")
+        try:
+            self.log_manager.add_log(args.content)
+            print("Done.")
+        except ValueError as error:
+            if str(error) == EMPTY_TEXT_ERROR:
+                print("Empty log content.")
+            else:
+                raise
 
     def _show_logs(self, args):
         for l in self.log_manager.show_logs():

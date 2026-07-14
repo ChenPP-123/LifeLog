@@ -189,6 +189,28 @@ For each implementation task, follow this workflow:
 For very small tasks, keep the explanation short, but still inspect the relevant
 code before editing.
 
+## Sprint Collaboration Workflow
+
+For a planned sprint, use this collaboration loop:
+
+1. Codex proposes a small sprint goal with a concrete learning target,
+   implementation target, and verification standard.
+2. The user implements the planned change first.
+3. Codex reviews the user's changes with a code review mindset, focusing on:
+   correctness, layer responsibilities, readability, maintainability, and
+   regression risk.
+4. Codex adds or updates tests needed to verify the intended behavior and expose
+   gaps in the implementation.
+5. Codex reports what is complete, what is broken, and what still needs to be
+   fixed before the sprint is considered done.
+6. If needed, Codex makes the smallest reasonable follow-up code changes to
+   complete the sprint cleanly.
+7. Codex runs the full test suite, summarizes the final state, and prepares the
+   project for commit or push when explicitly requested.
+
+Use this loop to keep each sprint inspectable and educational. Prefer one small
+completed sprint over a broad partially-finished one.
+
 ## Testing Rules
 
 Run the full test suite after code changes:
