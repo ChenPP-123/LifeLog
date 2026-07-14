@@ -1,54 +1,44 @@
 # LifeLog
 
-这是我自己动手开发的第一个python项目：LifeLog 是一个基于 Python 的终端任务与日志管理工具。
-
-它目前提供两类能力：
-
-- 任务管理
-- 日志记录
-
-所有数据都保存在本地 `data.json` 文件中，适合直接在命令行里快速使用。
+LifeLog 是一个基于 Python 的终端任务和生活日志管理工具。它不依赖数据库，所有数据都保存在项目根目录的 `data.json` 中，适合在命令行中快速记录和查看。
 
 ## 功能
 
-### Task
+- 创建、查看、完成、重命名和删除任务
+- 创建和查看生活日志
+- 首次运行时自动创建本地数据文件
 
-- 新增任务
-- 查看任务列表
-- 标记任务完成 / 未完成
-- 重命名任务
-- 删除任务
+## 环境要求
 
-### Log
-
-- 新增日志
-- 查看日志列表
+- Python 3.10 或更高版本
 
 ## 安装
 
-```bash
-pip install -r requirements.txt
-```
-
-## 运行
-
-项目入口是 `main.py`：
+建议在虚拟环境中安装依赖：
 
 ```bash
-python main.py <command> [args]
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\\Scripts\\activate
+python -m pip install -r requirements.txt
 ```
 
-第一次运行时，如果 `data.json` 不存在，程序会自动创建一个默认文件。
+## 使用
 
-## 命令说明
+所有命令都通过 `main.py` 执行：
 
-### 任务
+```bash
+python main.py <command> [arguments]
+```
 
-- `at <title>`: 新增任务
-- `lt`: 查看任务列表
-- `mt <index>`: 切换第 `index` 个任务的完成状态
-- `rt <index> <new_title>`: 重命名第 `index` 个任务
-- `dt <index>`: 删除第 `index` 个任务
+### 任务命令
+
+| 命令 | 作用 |
+| --- | --- |
+| `at <title>` | 添加任务 |
+| `lt` | 查看任务列表 |
+| `mt <index>` | 切换任务的完成状态 |
+| `rt <index> <new_title>` | 重命名任务 |
+| `dt <index>` | 删除任务 |
 
 示例：
 
@@ -60,10 +50,14 @@ python main.py rt 1 "Write better tests"
 python main.py dt 1
 ```
 
-### 日志
+任务编号从 `1` 开始。任务列表中，`[ ]` 表示未完成，`[*]` 表示已完成。
 
-- `al <content>`: 新增日志
-- `sl`: 查看日志列表
+### 日志命令
+
+| 命令 | 作用 |
+| --- | --- |
+| `al <content>` | 添加日志 |
+| `sl` | 查看日志列表 |
 
 示例：
 
@@ -72,23 +66,18 @@ python main.py al "Finished the first milestone."
 python main.py sl
 ```
 
-## 输出格式
-
-- 任务列表会按编号输出。
-- 未完成任务显示为 `[ ]`。
-- 已完成任务显示为 `[*]`。
-- 日志会按时间输出，格式为：
+日志会记录创建时间，并按以下格式显示：
 
 ```text
 YYYY-MM-DD HH:MM:SS:
     content
 ```
 
-## 数据存储
+任务编号不存在或输入为空时，程序会输出对应的错误信息。
 
-默认数据文件为项目根目录下的 `data.json`。
+## 数据文件
 
-结构如下：
+默认数据文件是项目根目录下的 `data.json`。文件不存在或为空时，LifeLog 会初始化为：
 
 ```json
 {
@@ -97,23 +86,34 @@ YYYY-MM-DD HH:MM:SS:
 }
 ```
 
-## 测试
+## 开发
+
+运行测试：
 
 ```bash
-python -m pytest
+pytest
 ```
 
-测试覆盖了以下内容：
+运行 CI 中使用的代码检查：
 
-- `Task` 和 `Log` 的数据转换
-- `Storage` 的读写行为
-- `TaskManager` 和 `LogManager` 的业务流程
-- `Cli` 的命令分发和输出格式
+```bash
+ruff check .
+black --check .
+```
 
 ## 项目结构
 
 ```text
-lifelog/
-main.py
-tests/
+.
+├── lifelog/
+│   ├── cli.py       # 命令分发和终端输出
+│   ├── log.py       # 日志模型
+│   ├── manager.py   # 任务和日志业务逻辑
+│   ├── storage.py   # data.json 读写
+│   └── task.py      # 任务模型
+├── tests/           # 自动化测试
+├── data.json        # 本地数据文件
+├── main.py          # 程序入口
+├── pyproject.toml   # 项目和工具配置
+└── requirements.txt # 依赖列表
 ```
