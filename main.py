@@ -1,9 +1,8 @@
 import argparse
 
-
-from lifelog.manager import TaskManager, LogManager
-from lifelog.storage import Storage
 from lifelog.cli import Cli
+from lifelog.manager import LogManager, TaskManager
+from lifelog.storage import Storage
 
 
 def main():

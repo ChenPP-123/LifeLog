@@ -1,5 +1,5 @@
-from .task import Task
 from .log import Log
+from .task import Task
 
 INVALID_INDEX_ERROR = "invalid_index"
 EMPTY_TEXT_ERROR = "empty_text"

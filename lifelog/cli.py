@@ -78,5 +78,5 @@ class Cli:
                 raise
 
     def _show_logs(self, args):
-        for l in self.log_manager.show_logs():
-            print(f"{l.time}:\n\t{l.content}")
+        for log in self.log_manager.show_logs():
+            print(f"{log.time}:\n\t{log.content}")

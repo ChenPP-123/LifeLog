@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from lifelog.log import Log
 import lifelog.log as log_module
+from lifelog.log import Log
 
 
 def test_log_round_trip_preserves_state():

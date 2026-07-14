@@ -1,9 +1,14 @@
 import pytest
-
-from lifelog.manager import EMPTY_TEXT_ERROR, INVALID_INDEX_ERROR, TaskManager, LogManager
-from lifelog.task import Task
-from lifelog.log import Log
 from fake_storage import FakeStorage
+
+from lifelog.log import Log
+from lifelog.manager import (
+    EMPTY_TEXT_ERROR,
+    INVALID_INDEX_ERROR,
+    LogManager,
+    TaskManager,
+)
+from lifelog.task import Task
 
 
 def init(data=None):
@@ -99,7 +104,12 @@ def test_delete_task_rejects_invalid_index(index):
 
 
 def test_list_tasks_returns_current_tasks():
-    s, t, _ = init({"tasks": [Task("task1"), Task("task2", completed=True)], "logs": []})
+    s, t, _ = init(
+        {
+            "tasks": [Task("task1"), Task("task2", completed=True)],
+            "logs": [],
+        }
+    )
 
     tasks = t.list_tasks()
 
@@ -109,32 +119,35 @@ def test_list_tasks_returns_current_tasks():
 
 
 def test_add_log_persists_new_log():
-    s, _, l = init()
-    l.add_log("this is a test log")
+    s, _, lm = init()
+    lm.add_log("this is a test log")
 
     assert [log.content for log in s.data["logs"]] == ["this is a test log"]
     assert s.save_calls == 1
 
 
 def test_add_log_rejects_blank_content():
-    s, _, l = init()
+    s, _, lm = init()
 
     with pytest.raises(ValueError, match=EMPTY_TEXT_ERROR):
-        l.add_log("   ")
+        lm.add_log("   ")
 
     assert s.data["logs"] == []
     assert s.save_calls == 0
 
 
 def test_show_logs_returns_current_logs():
-    s, _, l = init(
+    s, _, lm = init(
         {
             "tasks": [],
-            "logs": [Log("first", time="2026-07-10 08:00:00"), Log("second", time="2026-07-10 09:00:00")],
+            "logs": [
+                Log("first", time="2026-07-10 08:00:00"),
+                Log("second", time="2026-07-10 09:00:00"),
+            ],
         }
     )
 
-    logs = l.show_logs()
+    logs = lm.show_logs()
 
     assert [log.content for log in logs] == ["first", "second"]
     assert s.load_calls == 1

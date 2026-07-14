@@ -1,7 +1,8 @@
-from .task import Task
-from .log import Log
 import json
 import os
+
+from .log import Log
+from .task import Task
 
 
 class Storage:

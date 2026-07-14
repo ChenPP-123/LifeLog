@@ -1,8 +1,8 @@
 import json
 
+from lifelog.log import Log
 from lifelog.storage import Storage
 from lifelog.task import Task
-from lifelog.log import Log
 
 
 def test_storage_bootstraps_empty_file(tmp_path):

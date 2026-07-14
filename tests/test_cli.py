@@ -86,7 +86,9 @@ def test_rename_task_command_reports_success(capsys):
 
 
 def test_rename_task_command_prints_invalid_index_error(capsys):
-    task_manager = TaskManagerStub(errors={"rename_task": ValueError(INVALID_INDEX_ERROR)})
+    task_manager = TaskManagerStub(
+        errors={"rename_task": ValueError(INVALID_INDEX_ERROR)}
+    )
     cli = Cli(task_manager, LogManagerStub())
 
     cli.run(SimpleNamespace(command="rt", index=2, new_title="ignored"))
@@ -126,7 +128,9 @@ def test_mark_task_and_delete_task_commands(capsys):
 
 
 def test_mark_task_command_prints_invalid_index_error(capsys):
-    task_manager = TaskManagerStub(errors={"mark_task": ValueError(INVALID_INDEX_ERROR)})
+    task_manager = TaskManagerStub(
+        errors={"mark_task": ValueError(INVALID_INDEX_ERROR)}
+    )
     cli = Cli(task_manager, LogManagerStub())
 
     cli.run(SimpleNamespace(command="mt", index=0))
@@ -135,7 +139,9 @@ def test_mark_task_command_prints_invalid_index_error(capsys):
 
 
 def test_delete_task_command_prints_invalid_index_error(capsys):
-    task_manager = TaskManagerStub(errors={"delete_task": ValueError(INVALID_INDEX_ERROR)})
+    task_manager = TaskManagerStub(
+        errors={"delete_task": ValueError(INVALID_INDEX_ERROR)}
+    )
     cli = Cli(task_manager, LogManagerStub())
 
     cli.run(SimpleNamespace(command="dt", index=0))
