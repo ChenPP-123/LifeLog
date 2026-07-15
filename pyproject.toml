@@ -1,17 +1,27 @@
 [project]
 name = "lifelog"
 version = "0.1.0"
-description = "A simple task managing and life logging project"
-requires-python = ">=3.10"
+description = "A simple task manager and life logging project"
+requires-python = ">=3.13"
 
-[tool.black]
-line-length = 88
 
 [tool.ruff]
 line-length = 88
+target-version = "py313"
+
 
 [tool.ruff.lint]
-select = ["E", "F", "I"]
+select = [
+    "E",
+    "F",
+    "I"
+]
+
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
