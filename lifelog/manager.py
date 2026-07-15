@@ -1,5 +1,4 @@
-INVALID_INDEX_ERROR = "invalid_index"
-EMPTY_TEXT_ERROR = "empty_text"
+from .exceptions import EmptyTextError, InvalidIndexError
 
 
 class TaskManager:
@@ -8,15 +7,15 @@ class TaskManager:
 
     def add_task(self, title: str):
         if not title.strip():
-            raise ValueError(EMPTY_TEXT_ERROR)
+            raise EmptyTextError()
         self.storage.task_add(title)
 
     def rename_task(self, index: int, new_title: str):
         data = self.storage.load()
         if not 1 <= index <= len(data["tasks"]):
-            raise ValueError(INVALID_INDEX_ERROR)
+            raise InvalidIndexError()
         if not new_title.strip():
-            raise ValueError(EMPTY_TEXT_ERROR)
+            raise EmptyTextError()
         target_id = data["tasks"][index - 1].id
         self.storage.task_rename(target_id, new_title)
 
@@ -26,7 +25,7 @@ class TaskManager:
     def mark_task(self, index: int):
         data = self.storage.load()
         if not 1 <= index <= len(data["tasks"]):
-            raise ValueError(INVALID_INDEX_ERROR)
+            raise InvalidIndexError()
 
         target_id = data["tasks"][index - 1].id
         self.storage.task_mark(target_id)
@@ -34,7 +33,7 @@ class TaskManager:
     def delete_task(self, index: int):
         data = self.storage.load()
         if not 1 <= index <= len(data["tasks"]):
-            raise ValueError(INVALID_INDEX_ERROR)
+            raise InvalidIndexError()
 
         target_id = data["tasks"][index - 1].id
         self.storage.task_delete(target_id)
@@ -46,7 +45,7 @@ class LogManager:
 
     def add_log(self, content: str):
         if not content.strip():
-            raise ValueError(EMPTY_TEXT_ERROR)
+            raise EmptyTextError()
 
         self.storage.log_add(content)
 

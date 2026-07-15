@@ -1,6 +1,7 @@
 import json
 import os
 
+from .exceptions import TaskNotFoundError
 from .log import Log
 from .task import Task
 
@@ -59,4 +60,4 @@ class Storage:
         for task in data["tasks"]:
             if task.id == target_id:
                 return task
-        raise KeyError(f"task not found: {target_id}")
+        raise TaskNotFoundError()
