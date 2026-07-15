@@ -1,6 +1,3 @@
-from .log import Log
-from .task import Task
-
 INVALID_INDEX_ERROR = "invalid_index"
 EMPTY_TEXT_ERROR = "empty_text"
 
@@ -12,11 +9,8 @@ class TaskManager:
     def add_task(self, title: str):
         if not title.strip():
             raise ValueError(EMPTY_TEXT_ERROR)
-
-        data = self.storage.load()
-        task = Task(title)
-        data["tasks"].append(task)
-        self.storage.save(data)
+        
+        self.storage.task_add(title)
 
     def rename_task(self, index: int, new_title: str):
         data = self.storage.load()
@@ -24,9 +18,9 @@ class TaskManager:
             raise ValueError(INVALID_INDEX_ERROR)
         if not new_title.strip():
             raise ValueError(EMPTY_TEXT_ERROR)
-
-        data["tasks"][index - 1].rename(new_title)
-        self.storage.save(data)
+        
+        target_id=data["tasks"][index-1].id
+        self.storage.task_rename(target_id,new_title)
 
     def list_tasks(self):
         return self.storage.load()["tasks"]
@@ -36,16 +30,16 @@ class TaskManager:
         if not 1 <= index <= len(data["tasks"]):
             raise ValueError(INVALID_INDEX_ERROR)
 
-        data["tasks"][index - 1].change_status()
-        self.storage.save(data)
+        target_id=data["tasks"][index-1].id
+        self.storage.task_mark(target_id)
 
     def delete_task(self, index: int):
         data = self.storage.load()
         if not 1 <= index <= len(data["tasks"]):
             raise ValueError(INVALID_INDEX_ERROR)
 
-        del data["tasks"][index - 1]
-        self.storage.save(data)
+        target_id=data["tasks"][index-1].id
+        self.storage.task_delete(target_id)
 
 
 class LogManager:
@@ -56,10 +50,7 @@ class LogManager:
         if not content.strip():
             raise ValueError(EMPTY_TEXT_ERROR)
 
-        data = self.storage.load()
-        log = Log(content)
-        data["logs"].append(log)
-        self.storage.save(data)
+        self.storage.log_add(content)
 
     def show_logs(self):
         return self.storage.load()["logs"]
