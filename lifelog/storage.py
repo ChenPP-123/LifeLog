@@ -29,33 +29,34 @@ class Storage:
         with open(self.filename, "w") as d:
             json.dump(j_data, d, indent=4)
 
-    def task_add(self,title):
-        data=self.load()
+    def task_add(self, title):
+        data = self.load()
         data["tasks"].append(Task(title))
         self.save(data)
 
-    def task_rename(self,target_id,new_title):
-        data=self.load()
-        target=next((task for task in data["tasks"] if task.id ==target_id),None)
-        if target:
-            target.rename(new_title)
-        self.save(data)
-    
-    def task_mark(self,target_id):
-        data=self.load()
-        target=next((task for task in data["tasks"] if task.id ==target_id),None)
-        if target:
-            target.change_status()
-        self.save(data)
-    
-    def task_delete(self,target_id):
-        data=self.load()
-        target=next((task for task in data["tasks"] if task.id ==target_id),None)
-        if target:
-            data["tasks"].remove(target)
+    def task_rename(self, target_id, new_title):
+        data = self.load()
+        self._task_by_id(data, target_id).rename(new_title)
         self.save(data)
 
-    def log_add(self,content):
-        data=self.load()
+    def task_mark(self, target_id):
+        data = self.load()
+        self._task_by_id(data, target_id).change_status()
+        self.save(data)
+
+    def task_delete(self, target_id):
+        data = self.load()
+        data["tasks"].remove(self._task_by_id(data, target_id))
+        self.save(data)
+
+    def log_add(self, content):
+        data = self.load()
         data["logs"].append(Log(content))
         self.save(data)
+
+    @staticmethod
+    def _task_by_id(data, target_id):
+        for task in data["tasks"]:
+            if task.id == target_id:
+                return task
+        raise KeyError(f"task not found: {target_id}")

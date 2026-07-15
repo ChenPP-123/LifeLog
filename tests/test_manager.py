@@ -23,6 +23,8 @@ def test_add_task_persists_new_task():
     t.add_task("task1")
 
     assert [task.title for task in s.data["tasks"]] == ["task1"]
+    assert s.data["tasks"][0].id
+    assert s.data["tasks"][0].created_at
     assert s.save_calls == 1
 
 
@@ -123,6 +125,8 @@ def test_add_log_persists_new_log():
     lm.add_log("this is a test log")
 
     assert [log.content for log in s.data["logs"]] == ["this is a test log"]
+    assert s.data["logs"][0].id
+    assert s.data["logs"][0].time
     assert s.save_calls == 1
 
 

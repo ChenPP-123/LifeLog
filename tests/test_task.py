@@ -6,17 +6,40 @@ def test_task_defaults_to_incomplete():
 
     assert task.title == "write tests"
     assert task.completed is False
+    assert task.id
+    assert task.created_at
 
 
 def test_task_round_trip_preserves_state():
-    task = Task("write tests", completed=True)
+    task = Task(
+        "write tests",
+        completed=True,
+        id="task-1",
+        created_at="2026-07-10 12:30:45",
+    )
 
     data = task.to_dict()
     rebuilt = Task.from_dict(data)
 
-    assert data == {"title": "write tests", "completed": True}
+    assert data == {
+        "id": "task-1",
+        "title": "write tests",
+        "completed": True,
+        "created_at": "2026-07-10 12:30:45",
+    }
     assert rebuilt.title == task.title
     assert rebuilt.completed is True
+    assert rebuilt.id == task.id
+    assert rebuilt.created_at == task.created_at
+
+
+def test_task_loads_legacy_data_with_generated_metadata():
+    task = Task.from_dict({"title": "legacy task", "completed": False})
+
+    assert task.title == "legacy task"
+    assert task.completed is False
+    assert task.id
+    assert task.created_at
 
 
 def test_change_status_toggles_completion():
