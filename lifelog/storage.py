@@ -28,3 +28,29 @@ class Storage:
             j_data[key] = [i.to_dict() for i in data.get(key, [])]
         with open(self.filename, "w") as d:
             json.dump(j_data, d, indent=4)
+
+    def task_add(self,title):
+        data=self.load()
+        data["tasks"].append(Task(title))
+        self.save(data)
+
+    def task_rename(self,target_id,new_title):
+        data=self.load()
+        target=next((task for task in data["tasks"] if task.id ==target_id),None)
+        if target:
+            target.rename(new_title)
+        self.save(data)
+    
+    def task_mark(self,target_id):
+        data=self.load()
+        target=next((task for task in data["tasks"] if task.id ==target_id),None)
+        if target:
+            target.change_status()
+        self.save(data)
+    
+    def task_delete(self,target_id):
+        data=self.load()
+        target=next((task for task in data["tasks"] if task.id ==target_id),None)
+        if target:
+            data["tasks"].remove(target)
+        self.save(data)
