@@ -40,7 +40,7 @@ class Cli:
         except EmptyTextError:
             print("Empty title.")
         except TaskNotFoundError:
-            print("task not found.")
+            print("Task not found.")
 
     def _list_tasks(self, args):
         for i, t in enumerate(self.task_manager.list_tasks(), start=1):
@@ -53,7 +53,7 @@ class Cli:
         except InvalidIndexError:
             print("Invalid index.")
         except TaskNotFoundError:
-            print("task not found.")
+            print("Task not found.")
 
     def _delete_task(self, args):
         try:
@@ -62,7 +62,7 @@ class Cli:
         except InvalidIndexError:
             print("Invalid index.")
         except TaskNotFoundError:
-            print("task not found.")
+            print("Task not found.")
 
     def _add_log(self, args):
         try:

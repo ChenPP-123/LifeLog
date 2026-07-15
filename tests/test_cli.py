@@ -1,8 +1,10 @@
 from types import SimpleNamespace
 
+import pytest
+
 from lifelog.cli import Cli
+from lifelog.exceptions import EmptyTextError, InvalidIndexError, TaskNotFoundError
 from lifelog.log import Log
-from lifelog.manager import EMPTY_TEXT_ERROR, INVALID_INDEX_ERROR
 from lifelog.task import Task
 
 
@@ -86,9 +88,7 @@ def test_rename_task_command_reports_success(capsys):
 
 
 def test_rename_task_command_prints_invalid_index_error(capsys):
-    task_manager = TaskManagerStub(
-        errors={"rename_task": ValueError(INVALID_INDEX_ERROR)}
-    )
+    task_manager = TaskManagerStub(errors={"rename_task": InvalidIndexError()})
     cli = Cli(task_manager, LogManagerStub())
 
     cli.run(SimpleNamespace(command="rt", index=2, new_title="ignored"))
@@ -97,7 +97,7 @@ def test_rename_task_command_prints_invalid_index_error(capsys):
 
 
 def test_rename_task_command_prints_empty_title_error(capsys):
-    task_manager = TaskManagerStub(errors={"rename_task": ValueError(EMPTY_TEXT_ERROR)})
+    task_manager = TaskManagerStub(errors={"rename_task": EmptyTextError()})
     cli = Cli(task_manager, LogManagerStub())
 
     cli.run(SimpleNamespace(command="rt", index=1, new_title="   "))
@@ -111,7 +111,7 @@ def test_list_tasks_command_formats_tasks(capsys):
 
     cli.run(SimpleNamespace(command="lt"))
 
-    assert capsys.readouterr().out == "1 [ ] draft\n2 [*] done\n\n"
+    assert capsys.readouterr().out == "1 [ ] draft\n2 [*] done\n"
 
 
 def test_mark_task_and_delete_task_commands(capsys):
@@ -128,9 +128,7 @@ def test_mark_task_and_delete_task_commands(capsys):
 
 
 def test_mark_task_command_prints_invalid_index_error(capsys):
-    task_manager = TaskManagerStub(
-        errors={"mark_task": ValueError(INVALID_INDEX_ERROR)}
-    )
+    task_manager = TaskManagerStub(errors={"mark_task": InvalidIndexError()})
     cli = Cli(task_manager, LogManagerStub())
 
     cli.run(SimpleNamespace(command="mt", index=0))
@@ -139,9 +137,7 @@ def test_mark_task_command_prints_invalid_index_error(capsys):
 
 
 def test_delete_task_command_prints_invalid_index_error(capsys):
-    task_manager = TaskManagerStub(
-        errors={"delete_task": ValueError(INVALID_INDEX_ERROR)}
-    )
+    task_manager = TaskManagerStub(errors={"delete_task": InvalidIndexError()})
     cli = Cli(task_manager, LogManagerStub())
 
     cli.run(SimpleNamespace(command="dt", index=0))
@@ -162,7 +158,7 @@ def test_add_log_and_show_logs_commands(capsys):
 
 
 def test_add_task_command_prints_empty_title_error(capsys):
-    task_manager = TaskManagerStub(errors={"add_task": ValueError(EMPTY_TEXT_ERROR)})
+    task_manager = TaskManagerStub(errors={"add_task": EmptyTextError()})
     cli = Cli(task_manager, LogManagerStub())
 
     cli.run(SimpleNamespace(command="at", title="   "))
@@ -171,9 +167,25 @@ def test_add_task_command_prints_empty_title_error(capsys):
 
 
 def test_add_log_command_prints_empty_content_error(capsys):
-    log_manager = LogManagerStub(errors={"add_log": ValueError(EMPTY_TEXT_ERROR)})
+    log_manager = LogManagerStub(errors={"add_log": EmptyTextError()})
     cli = Cli(TaskManagerStub(), log_manager)
 
     cli.run(SimpleNamespace(command="al", content="   "))
 
-    assert capsys.readouterr().out == "Empty log content.\n"
+    assert capsys.readouterr().out == "Empty content.\n"
+
+
+@pytest.mark.parametrize("command", ["rt", "mt", "dt"])
+def test_task_commands_report_missing_task(command, capsys):
+    method_name = {"rt": "rename_task", "mt": "mark_task", "dt": "delete_task"}[command]
+    task_manager = TaskManagerStub(errors={method_name: TaskNotFoundError()})
+    cli = Cli(task_manager, LogManagerStub())
+    args = {
+        "rt": SimpleNamespace(command="rt", index=1, new_title="updated"),
+        "mt": SimpleNamespace(command="mt", index=1),
+        "dt": SimpleNamespace(command="dt", index=1),
+    }[command]
+
+    cli.run(args)
+
+    assert capsys.readouterr().out == "Task not found.\n"

@@ -1,13 +1,9 @@
 import pytest
 from fake_storage import FakeStorage
 
+from lifelog.exceptions import EmptyTextError, InvalidIndexError
 from lifelog.log import Log
-from lifelog.manager import (
-    EMPTY_TEXT_ERROR,
-    INVALID_INDEX_ERROR,
-    LogManager,
-    TaskManager,
-)
+from lifelog.manager import LogManager, TaskManager
 from lifelog.task import Task
 
 
@@ -31,7 +27,7 @@ def test_add_task_persists_new_task():
 def test_add_task_rejects_blank_title():
     s, t, _ = init()
 
-    with pytest.raises(ValueError, match=EMPTY_TEXT_ERROR):
+    with pytest.raises(EmptyTextError):
         t.add_task("   ")
 
     assert s.data["tasks"] == []
@@ -50,7 +46,7 @@ def test_rename_task_updates_selected_task():
 def test_rename_task_rejects_invalid_index(index):
     s, t, _ = init({"tasks": [Task("task1")], "logs": []})
 
-    with pytest.raises(ValueError, match=INVALID_INDEX_ERROR):
+    with pytest.raises(InvalidIndexError):
         t.rename_task(index, "ignored")
 
     assert [task.title for task in s.data["tasks"]] == ["task1"]
@@ -60,7 +56,7 @@ def test_rename_task_rejects_invalid_index(index):
 def test_rename_task_rejects_blank_new_title():
     s, t, _ = init({"tasks": [Task("task1")], "logs": []})
 
-    with pytest.raises(ValueError, match=EMPTY_TEXT_ERROR):
+    with pytest.raises(EmptyTextError):
         t.rename_task(1, "  ")
 
     assert [task.title for task in s.data["tasks"]] == ["task1"]
@@ -79,7 +75,7 @@ def test_mark_task_flips_completion_state():
 def test_mark_task_rejects_invalid_index(index):
     s, t, _ = init({"tasks": [Task("task1")], "logs": []})
 
-    with pytest.raises(ValueError, match=INVALID_INDEX_ERROR):
+    with pytest.raises(InvalidIndexError):
         t.mark_task(index)
 
     assert s.data["tasks"][0].completed is False
@@ -98,7 +94,7 @@ def test_delete_task_removes_selected_task():
 def test_delete_task_rejects_invalid_index(index):
     s, t, _ = init({"tasks": [Task("task1")], "logs": []})
 
-    with pytest.raises(ValueError, match=INVALID_INDEX_ERROR):
+    with pytest.raises(InvalidIndexError):
         t.delete_task(index)
 
     assert [task.title for task in s.data["tasks"]] == ["task1"]
@@ -133,7 +129,7 @@ def test_add_log_persists_new_log():
 def test_add_log_rejects_blank_content():
     s, _, lm = init()
 
-    with pytest.raises(ValueError, match=EMPTY_TEXT_ERROR):
+    with pytest.raises(EmptyTextError):
         lm.add_log("   ")
 
     assert s.data["logs"] == []

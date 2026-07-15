@@ -1,5 +1,8 @@
 import json
 
+import pytest
+
+from lifelog.exceptions import TaskNotFoundError
 from lifelog.log import Log
 from lifelog.storage import Storage
 from lifelog.task import Task
@@ -116,3 +119,18 @@ def test_storage_updates_and_deletes_tasks_by_id(tmp_path):
     assert [(task.id, task.title, task.completed) for task in tasks] == [
         ("task-2", "renamed", True)
     ]
+
+
+@pytest.mark.parametrize(
+    ("method", "args"),
+    [
+        ("task_rename", ("missing", "renamed")),
+        ("task_mark", ("missing",)),
+        ("task_delete", ("missing",)),
+    ],
+)
+def test_storage_rejects_unknown_task_id(tmp_path, method, args):
+    storage = Storage(str(tmp_path / "data.json"))
+
+    with pytest.raises(TaskNotFoundError):
+        getattr(storage, method)(*args)
