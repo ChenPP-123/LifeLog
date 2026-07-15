@@ -54,3 +54,8 @@ class Storage:
         if target:
             data["tasks"].remove(target)
         self.save(data)
+
+    def log_add(self,content):
+        data=self.load()
+        data["logs"].append(Log(content))
+        self.save(data)
