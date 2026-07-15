@@ -94,11 +94,11 @@ YYYY-MM-DD HH:MM:SS:
 pytest
 ```
 
-运行 CI 中使用的代码检查：
+运行代码格式化和检查：
 
 ```bash
+ruff format .
 ruff check .
-black --check .
 ```
 
 ## 项目结构

@@ -72,9 +72,7 @@ def test_storage_saves_models_as_json(tmp_path):
                     created_at="2026-07-11 09:00:00",
                 )
             ],
-            "logs": [
-                Log("saved log", time="2026-07-11 10:00:00", id="log-1")
-            ],
+            "logs": [Log("saved log", time="2026-07-11 10:00:00", id="log-1")],
         }
     )
 
