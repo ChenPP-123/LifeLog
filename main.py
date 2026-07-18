@@ -1,13 +1,13 @@
 import argparse
 
 from lifelog.cli import Cli
-from lifelog.config import DATA_FILE
+from lifelog.config import DATA_FILE, DATABASE_FILE
 from lifelog.manager import LogManager, TaskManager
 from lifelog.storage import Storage
 
 
 def main():
-    storage = Storage(DATA_FILE)
+    storage = Storage(DATA_FILE, DATABASE_FILE)
     task_manager = TaskManager(storage)
     log_manager = LogManager(storage)
     cli = Cli(task_manager, log_manager)

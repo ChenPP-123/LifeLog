@@ -1,5 +1,6 @@
 import json
 import os
+import sqlite3
 
 from .exceptions import TaskNotFoundError
 from .log import Log
@@ -7,13 +8,28 @@ from .task import Task
 
 
 class Storage:
-    def __init__(self, filename: str):
+    def __init__(self, filename: str, db_path):
         self.filename = filename
         self.MODEL_MAP = {"tasks": Task, "logs": Log}
 
         if not os.path.exists(self.filename) or os.path.getsize(self.filename) == 0:
             with open(self.filename, "w") as d:
                 json.dump({"tasks": [], "logs": []}, d, indent=4)
+
+        self.conn = sqlite3.connect(db_path)
+        self.cursor = self.conn.cursor()
+        self.init_database()
+
+    def init_database(self):
+        SQL = """
+CREATE TABLE IF NOT EXISTS tasks (
+id TEXT PRIMARY KEY,
+title TEXT NOT NULL,
+completed INTEGER NOT NULL,
+created_at TEXT NOT NULL)
+"""
+        self.cursor.execute(SQL)
+        self.conn.commit()
 
     def load(self):
         with open(self.filename, "r") as d:

@@ -8,6 +8,7 @@ __pycache__/
 .ruff_cache/
 
 data.json
+lifelog.db
 
 .DS_Store
 
