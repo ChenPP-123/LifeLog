@@ -107,6 +107,8 @@ ruff check .
 .
 ├── lifelog/
 │   ├── cli.py       # 命令分发和终端输出
+│   ├── config.py    # 项目路径和数据文件配置
+│   ├── exceptions.py # 自定义异常
 │   ├── log.py       # 日志模型
 │   ├── manager.py   # 任务和日志业务逻辑
 │   ├── storage.py   # data.json 读写
