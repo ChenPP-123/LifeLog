@@ -6,7 +6,7 @@ from .log import Log
 from .task import Task
 
 
-class Storage:
+class SqlStorage:
     def __init__(self, database_path: str | Path):
         self.connection = sqlite3.connect(database_path)
         self.connection.row_factory = sqlite3.Row

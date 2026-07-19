@@ -104,7 +104,7 @@ ruff check .
 │   ├── exceptions.py # 自定义异常
 │   ├── log.py       # 日志模型
 │   ├── manager.py   # 任务和日志业务逻辑
-│   ├── storage.py   # SQLite 读写
+│   ├── sqlite.py    # SQLite 读写
 │   └── task.py      # 任务模型
 ├── tests/           # 自动化测试
 ├── lifelog.db       # 本地 SQLite 数据库

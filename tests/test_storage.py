@@ -1,7 +1,7 @@
 import pytest
 
 from lifelog.exceptions import TaskNotFoundError
-from lifelog.sqlite import Storage
+from lifelog.sqlite import SqlStorage
 
 
 def test_storage_starts_with_no_records(storage):
@@ -26,11 +26,11 @@ def test_storage_persists_tasks_and_logs(storage):
 
 def test_storage_persists_data_after_reopening(tmp_path):
     database_path = tmp_path / "lifelog.db"
-    with Storage(database_path) as storage:
+    with SqlStorage(database_path) as storage:
         storage.add_task("saved task")
         storage.add_log("saved log")
 
-    with Storage(database_path) as storage:
+    with SqlStorage(database_path) as storage:
         assert [task.title for task in storage.get_tasks()] == ["saved task"]
         assert [log.content for log in storage.get_logs()] == ["saved log"]
 

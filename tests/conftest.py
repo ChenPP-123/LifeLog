@@ -1,10 +1,10 @@
 import pytest
 
-from lifelog.sqlite import Storage
+from lifelog.sqlite import SqlStorage
 
 
 @pytest.fixture
 def storage(tmp_path):
-    database = Storage(tmp_path / "lifelog.db")
+    database = SqlStorage(tmp_path / "lifelog.db")
     yield database
     database.close()

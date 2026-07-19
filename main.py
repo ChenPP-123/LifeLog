@@ -3,7 +3,7 @@ import argparse
 from lifelog.cli import Cli
 from lifelog.config import DATABASE_FILE
 from lifelog.manager import LogManager, TaskManager
-from lifelog.sqlite import Storage
+from lifelog.sqlite import SqlStorage
 
 
 def main():
@@ -34,8 +34,8 @@ def main():
 
     args = parser.parse_args()
 
-    with Storage(DATABASE_FILE) as storage:
-        cli = Cli(TaskManager(storage), LogManager(storage))
+    with SqlStorage(DATABASE_FILE) as sql_storage:
+        cli = Cli(TaskManager(sql_storage), LogManager(sql_storage))
         cli.run(args)
 
 
