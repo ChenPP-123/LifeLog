@@ -14,7 +14,7 @@ class TaskManager:
         if not new_title.strip():
             raise EmptyTextError()
         target_task = self.storage.get_task_by_index(index)
-        self.storage.rename_task(new_title, target_task.id)
+        self.storage.rename_task(target_task.id, new_title)
 
     def list_tasks(self):
         return self.storage.get_tasks()
@@ -22,7 +22,7 @@ class TaskManager:
     def mark_task(self, index: int):
         target_task = self.storage.get_task_by_index(index)
         target_task.change_status()
-        self.storage.mark_task(target_task.completed, target_task.id)
+        self.storage.mark_task(target_task.id, target_task.completed)
 
     def delete_task(self, index: int):
         target_task = self.storage.get_task_by_index(index)

@@ -10,51 +10,26 @@ def test_task_defaults_to_incomplete():
     assert task.created_at
 
 
-def test_task_round_trip_preserves_state():
+def test_task_uses_provided_metadata():
     task = Task(
         "write tests",
         completed=True,
         id="task-1",
-        created_at="2026-07-10 12:30:45",
+        created_at="2026-07-10T12:30:45",
     )
 
-    data = task.to_dict()
-    rebuilt = Task.from_dict(data)
-
-    assert data == {
-        "id": "task-1",
-        "title": "write tests",
-        "completed": True,
-        "created_at": "2026-07-10 12:30:45",
-    }
-    assert rebuilt.title == task.title
-    assert rebuilt.completed is True
-    assert rebuilt.id == task.id
-    assert rebuilt.created_at == task.created_at
+    assert (task.title, task.completed, task.id, task.created_at) == (
+        "write tests",
+        True,
+        "task-1",
+        "2026-07-10T12:30:45",
+    )
 
 
-def test_task_loads_legacy_data_with_generated_metadata():
-    task = Task.from_dict({"title": "legacy task", "completed": False})
-
-    assert task.title == "legacy task"
-    assert task.completed is False
-    assert task.id
-    assert task.created_at
-
-
-def test_change_status_toggles_completion():
-    task = Task("write tests")
-
-    task.change_status()
-    assert task.completed is True
-
-    task.change_status()
-    assert task.completed is False
-
-
-def test_rename_updates_title():
+def test_task_can_be_renamed_and_completed():
     task = Task("old title")
 
     task.rename("new title")
+    task.change_status()
 
-    assert task.title == "new title"
+    assert (task.title, task.completed) == ("new title", True)

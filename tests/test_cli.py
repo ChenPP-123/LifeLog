@@ -3,7 +3,7 @@ from types import SimpleNamespace
 import pytest
 
 from lifelog.cli import Cli
-from lifelog.exceptions import EmptyTextError, InvalidIndexError, TaskNotFoundError
+from lifelog.exceptions import EmptyTextError, TaskNotFoundError
 from lifelog.log import Log
 from lifelog.task import Task
 
@@ -87,15 +87,6 @@ def test_rename_task_command_reports_success(capsys):
     assert task_manager.calls == [("rename_task", 1, "updated")]
 
 
-def test_rename_task_command_prints_invalid_index_error(capsys):
-    task_manager = TaskManagerStub(errors={"rename_task": InvalidIndexError()})
-    cli = Cli(task_manager, LogManagerStub())
-
-    cli.run(SimpleNamespace(command="rt", index=2, new_title="ignored"))
-
-    assert capsys.readouterr().out == "Invalid index.\n"
-
-
 def test_rename_task_command_prints_empty_title_error(capsys):
     task_manager = TaskManagerStub(errors={"rename_task": EmptyTextError()})
     cli = Cli(task_manager, LogManagerStub())
@@ -127,33 +118,15 @@ def test_mark_task_and_delete_task_commands(capsys):
     assert task_manager.calls == [("mark_task", 1), ("delete_task", 2)]
 
 
-def test_mark_task_command_prints_invalid_index_error(capsys):
-    task_manager = TaskManagerStub(errors={"mark_task": InvalidIndexError()})
-    cli = Cli(task_manager, LogManagerStub())
-
-    cli.run(SimpleNamespace(command="mt", index=0))
-
-    assert capsys.readouterr().out == "Invalid index.\n"
-
-
-def test_delete_task_command_prints_invalid_index_error(capsys):
-    task_manager = TaskManagerStub(errors={"delete_task": InvalidIndexError()})
-    cli = Cli(task_manager, LogManagerStub())
-
-    cli.run(SimpleNamespace(command="dt", index=0))
-
-    assert capsys.readouterr().out == "Invalid index.\n"
-
-
 def test_add_log_and_show_logs_commands(capsys):
-    log_manager = LogManagerStub(logs=[Log("first", time="2026-07-11 10:00:00")])
+    log_manager = LogManagerStub(logs=[Log("first", created_at="2026-07-11T10:00:00")])
     cli = Cli(TaskManagerStub(), log_manager)
 
     cli.run(SimpleNamespace(command="al", content="new log"))
     assert capsys.readouterr().out == "Done.\n"
 
     cli.run(SimpleNamespace(command="sl"))
-    assert capsys.readouterr().out == "2026-07-11 10:00:00:\n\tfirst\n"
+    assert capsys.readouterr().out == "2026-07-11T10:00:00:\n\tfirst\n"
     assert log_manager.calls == [("add_log", "new log"), ("show_logs",)]
 
 

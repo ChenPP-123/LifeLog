@@ -1,17 +1,12 @@
 import argparse
 
 from lifelog.cli import Cli
-from lifelog.config import DATA_FILE, DATABASE_FILE
+from lifelog.config import DATABASE_FILE
 from lifelog.manager import LogManager, TaskManager
-from lifelog.storage import Storage
+from lifelog.sqlite import Storage
 
 
 def main():
-    storage = Storage(DATA_FILE, DATABASE_FILE)
-    task_manager = TaskManager(storage)
-    log_manager = LogManager(storage)
-    cli = Cli(task_manager, log_manager)
-
     parser = argparse.ArgumentParser(
         prog="lifelog", description="A simple task manager"
     )
@@ -39,7 +34,9 @@ def main():
 
     args = parser.parse_args()
 
-    cli.run(args)
+    with Storage(DATABASE_FILE) as storage:
+        cli = Cli(TaskManager(storage), LogManager(storage))
+        cli.run(args)
 
 
 if __name__ == "__main__":

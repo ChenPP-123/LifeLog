@@ -66,4 +66,4 @@ class Cli:
 
     def _show_logs(self, args):
         for log in self.log_manager.show_logs():
-            print(f"{log.time}:\n\t{log.content}")
+            print(f"{log.created_at}:\n\t{log.content}")

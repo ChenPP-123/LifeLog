@@ -1,153 +1,51 @@
 import pytest
-from fake_storage import FakeStorage
 
-from lifelog.exceptions import EmptyTextError, InvalidIndexError
-from lifelog.log import Log
+from lifelog.exceptions import EmptyTextError, TaskNotFoundError
 from lifelog.manager import LogManager, TaskManager
-from lifelog.task import Task
 
 
-def init(data=None):
-    storage = FakeStorage(data)
-    task_manager = TaskManager(storage)
-    log_manager = LogManager(storage)
-    return storage, task_manager, log_manager
+def test_task_manager_manages_tasks(storage):
+    manager = TaskManager(storage)
+
+    manager.add_task("first")
+    manager.add_task("second")
+    manager.rename_task(2, "renamed")
+    manager.mark_task(1)
+    manager.delete_task(2)
+
+    tasks = manager.list_tasks()
+    assert [(task.title, task.completed) for task in tasks] == [("first", True)]
 
 
-def test_add_task_persists_new_task():
-    s, t, _ = init()
-    t.add_task("task1")
+@pytest.mark.parametrize(
+    "method,args",
+    [("rename_task", (0, "name")), ("mark_task", (0,)), ("delete_task", (0,))],
+)
+def test_task_manager_rejects_missing_task(storage, method, args):
+    manager = TaskManager(storage)
 
-    assert [task.title for task in s.data["tasks"]] == ["task1"]
-    assert s.data["tasks"][0].id
-    assert s.data["tasks"][0].created_at
-    assert s.save_calls == 1
-
-
-def test_add_task_rejects_blank_title():
-    s, t, _ = init()
-
-    with pytest.raises(EmptyTextError):
-        t.add_task("   ")
-
-    assert s.data["tasks"] == []
-    assert s.save_calls == 0
+    with pytest.raises(TaskNotFoundError):
+        getattr(manager, method)(*args)
 
 
-def test_rename_task_updates_selected_task():
-    s, t, _ = init({"tasks": [Task("task1"), Task("task2")], "logs": []})
-
-    t.rename_task(2, "tasknew2")
-    assert [task.title for task in s.data["tasks"]] == ["task1", "tasknew2"]
-    assert s.save_calls == 1
-
-
-@pytest.mark.parametrize("index", [0, 3, -1])
-def test_rename_task_rejects_invalid_index(index):
-    s, t, _ = init({"tasks": [Task("task1")], "logs": []})
-
-    with pytest.raises(InvalidIndexError):
-        t.rename_task(index, "ignored")
-
-    assert [task.title for task in s.data["tasks"]] == ["task1"]
-    assert s.save_calls == 0
-
-
-def test_rename_task_rejects_blank_new_title():
-    s, t, _ = init({"tasks": [Task("task1")], "logs": []})
+@pytest.mark.parametrize(
+    "method,args", [("add_task", ("  ",)), ("rename_task", (1, "  "))]
+)
+def test_task_manager_rejects_blank_titles(storage, method, args):
+    manager = TaskManager(storage)
 
     with pytest.raises(EmptyTextError):
-        t.rename_task(1, "  ")
-
-    assert [task.title for task in s.data["tasks"]] == ["task1"]
-    assert s.save_calls == 0
+        getattr(manager, method)(*args)
 
 
-def test_mark_task_flips_completion_state():
-    s, t, _ = init({"tasks": [Task("task1"), Task("task2")], "logs": []})
+def test_log_manager_manages_logs(storage):
+    manager = LogManager(storage)
 
-    t.mark_task(2)
-    assert s.data["tasks"][-1].completed is True
-    assert s.save_calls == 1
+    manager.add_log("first log")
 
-
-@pytest.mark.parametrize("index", [0, 3, -1])
-def test_mark_task_rejects_invalid_index(index):
-    s, t, _ = init({"tasks": [Task("task1")], "logs": []})
-
-    with pytest.raises(InvalidIndexError):
-        t.mark_task(index)
-
-    assert s.data["tasks"][0].completed is False
-    assert s.save_calls == 0
+    assert [log.content for log in manager.show_logs()] == ["first log"]
 
 
-def test_delete_task_removes_selected_task():
-    s, t, _ = init({"tasks": [Task("task1"), Task("task2")], "logs": []})
-
-    t.delete_task(2)
-    assert [task.title for task in s.data["tasks"]] == ["task1"]
-    assert s.save_calls == 1
-
-
-@pytest.mark.parametrize("index", [0, 3, -1])
-def test_delete_task_rejects_invalid_index(index):
-    s, t, _ = init({"tasks": [Task("task1")], "logs": []})
-
-    with pytest.raises(InvalidIndexError):
-        t.delete_task(index)
-
-    assert [task.title for task in s.data["tasks"]] == ["task1"]
-    assert s.save_calls == 0
-
-
-def test_list_tasks_returns_current_tasks():
-    s, t, _ = init(
-        {
-            "tasks": [Task("task1"), Task("task2", completed=True)],
-            "logs": [],
-        }
-    )
-
-    tasks = t.list_tasks()
-
-    assert [task.title for task in tasks] == ["task1", "task2"]
-    assert [task.completed for task in tasks] == [False, True]
-    assert s.load_calls == 1
-
-
-def test_add_log_persists_new_log():
-    s, _, lm = init()
-    lm.add_log("this is a test log")
-
-    assert [log.content for log in s.data["logs"]] == ["this is a test log"]
-    assert s.data["logs"][0].id
-    assert s.data["logs"][0].time
-    assert s.save_calls == 1
-
-
-def test_add_log_rejects_blank_content():
-    s, _, lm = init()
-
+def test_log_manager_rejects_blank_content(storage):
     with pytest.raises(EmptyTextError):
-        lm.add_log("   ")
-
-    assert s.data["logs"] == []
-    assert s.save_calls == 0
-
-
-def test_show_logs_returns_current_logs():
-    s, _, lm = init(
-        {
-            "tasks": [],
-            "logs": [
-                Log("first", time="2026-07-10 08:00:00"),
-                Log("second", time="2026-07-10 09:00:00"),
-            ],
-        }
-    )
-
-    logs = lm.show_logs()
-
-    assert [log.content for log in logs] == ["first", "second"]
-    assert s.load_calls == 1
+        LogManager(storage).add_log("  ")

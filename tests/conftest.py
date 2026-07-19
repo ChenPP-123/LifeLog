@@ -1,6 +1,10 @@
-import sys
-from pathlib import Path
+import pytest
 
-ROOT = Path(__file__).resolve().parent.parent
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
+from lifelog.sqlite import Storage
+
+
+@pytest.fixture
+def storage(tmp_path):
+    database = Storage(tmp_path / "lifelog.db")
+    yield database
+    database.close()
