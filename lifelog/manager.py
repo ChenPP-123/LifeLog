@@ -8,7 +8,7 @@ class TaskManager:
     def add_task(self, title: str):
         if not title.strip():
             raise EmptyTextError()
-        self.storage.task_add(title)
+        self.storage.add_task(title)
 
     def rename_task(self, index: int, new_title: str):
         data = self.storage.load()
@@ -20,7 +20,7 @@ class TaskManager:
         self.storage.task_rename(target_id, new_title)
 
     def list_tasks(self):
-        return self.storage.load()["tasks"]
+        return self.storage.get_tasks()
 
     def mark_task(self, index: int):
         data = self.storage.load()
@@ -28,7 +28,8 @@ class TaskManager:
             raise InvalidIndexError()
 
         target_id = data["tasks"][index - 1].id
-        self.storage.task_mark(target_id)
+        new_completed = data["tasks"][index - 1].change_status()
+        self.storage.task_mark(new_completed, target_id)
 
     def delete_task(self, index: int):
         data = self.storage.load()
@@ -36,7 +37,7 @@ class TaskManager:
             raise InvalidIndexError()
 
         target_id = data["tasks"][index - 1].id
-        self.storage.task_delete(target_id)
+        self.storage.delete_task(target_id)
 
 
 class LogManager:

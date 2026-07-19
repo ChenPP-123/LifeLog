@@ -30,6 +30,10 @@ class Task:
             created_at=data.get("created_at"),
         )
 
+    @classmethod
+    def from_sql_row(cls, row):
+        return cls(row[1], bool(row[2]), row[0], row[3])
+
     def change_status(self):
         self.completed = not self.completed
 

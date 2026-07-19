@@ -21,14 +21,58 @@ class Storage:
         self.init_database()
 
     def init_database(self):
-        SQL = """
+        sql = """
 CREATE TABLE IF NOT EXISTS tasks (
 id TEXT PRIMARY KEY,
 title TEXT NOT NULL,
 completed INTEGER NOT NULL,
 created_at TEXT NOT NULL)
 """
-        self.cursor.execute(SQL)
+        self.cursor.execute(sql)
+        self.conn.commit()
+
+    def add_task(self, title):
+        task = Task(title)
+        sql = """
+INSERT INTO tasks (id, title, completed, created_at)
+VALUES (?, ?, ?, ?)
+"""
+        self.cursor.execute(sql, (task.id, task.title, task.completed, task.created_at))
+        self.conn.commit()
+
+    def get_tasks(self):
+        sql = """
+SELECT id, title, completed, created_at
+FROM tasks
+"""
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+        return [Task.from_sql_row(i) for i in rows]
+
+    def rename_task(self, new_title, target_id):
+        sql = """
+UPDATE tasks
+SET title=?
+WHERE id=?
+"""
+        self.cursor.execute(sql, (new_title, target_id))
+        self.conn.commit()
+
+    def mark_task(self, new_completed, target_id):
+        sql = """
+UPDATE tasks
+SET completed=?
+WHERE id=?
+"""
+        self.cursor.execute(sql, (int(new_completed), target_id))
+        self.conn.commit()
+
+    def delete_task(self, target_id):
+        sql = """
+DELETE FROM tasks
+WHERE id=?
+"""
+        self.conn.execute(sql, (target_id,))
         self.conn.commit()
 
     def load(self):
