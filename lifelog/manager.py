@@ -37,7 +37,7 @@ class LogManager:
         if not content.strip():
             raise EmptyTextError()
 
-        self.storage.log_add(content)
+        self.storage.add_log(content)
 
     def show_logs(self):
-        return self.storage.load()["logs"]
+        return self.storage.get_logs()

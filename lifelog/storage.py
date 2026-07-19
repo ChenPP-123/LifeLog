@@ -26,7 +26,13 @@ CREATE TABLE IF NOT EXISTS tasks (
 id TEXT PRIMARY KEY,
 title TEXT NOT NULL,
 completed INTEGER NOT NULL,
-created_at TEXT NOT NULL)
+created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS logs (
+id TEXT PRIMARY KEY,
+content TEXT NOT NULL,
+created_at TEXT NOT NULL
+)
 """
         self.cursor.execute(sql)
         self.conn.commit()
@@ -53,12 +59,11 @@ VALUES (?, ?, ?, ?)
 
     def get_tasks(self):
         sql = """
-SELECT id, title, completed, created_at
-FROM tasks
+SELECT * FROM tasks ORDER BY created_at
 """
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
-        return [Task.from_sql_row(i) for i in rows]
+        return [Task.from_sql_row(row) for row in rows]
 
     def rename_task(self, new_title, target_id):
         sql = """
@@ -85,6 +90,23 @@ WHERE id=?
 """
         self.conn.execute(sql, (target_id,))
         self.conn.commit()
+
+    def add_log(self, content):
+        log = Log(content)
+        sql = """
+INSERT INTO logs (id, content, created_at)
+VALUES (?, ?, ?)
+"""
+        self.cursor.execute(sql, (log.id, log.content, log.created_at))
+        self.conn.commit()
+
+    def get_logs(self):
+        sql = """
+SELECT * FROM logs ORDER BY created_at
+"""
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+        return [Log.from_sql_row(row) for row in rows]
 
     def load(self):
         with open(self.filename, "r") as d:

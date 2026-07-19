@@ -1,6 +1,5 @@
 from .exceptions import (
     EmptyTextError,
-    InvalidIndexError,
     TaskNotFoundError,
 )
 
@@ -35,8 +34,6 @@ class Cli:
         try:
             self.task_manager.rename_task(args.index, args.new_title)
             print("Done.")
-        except InvalidIndexError:
-            print("Invalid index.")
         except EmptyTextError:
             print("Empty title.")
         except TaskNotFoundError:
@@ -50,8 +47,6 @@ class Cli:
         try:
             self.task_manager.mark_task(args.index)
             print("Done.")
-        except InvalidIndexError:
-            print("Invalid index.")
         except TaskNotFoundError:
             print("Task not found.")
 
@@ -59,8 +54,6 @@ class Cli:
         try:
             self.task_manager.delete_task(args.index)
             print("Done.")
-        except InvalidIndexError:
-            print("Invalid index.")
         except TaskNotFoundError:
             print("Task not found.")
 
