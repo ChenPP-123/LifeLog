@@ -31,6 +31,17 @@ created_at TEXT NOT NULL)
         self.cursor.execute(sql)
         self.conn.commit()
 
+    def get_task_by_index(self, index):
+        sql = """
+SELECT * FROM tasks ORDER BY created_at
+LIMIT 1 OFFSET ?
+"""
+        self.cursor.execute(sql, (index,))
+        row = self.cursor.fetchone()
+        if row is None:
+            raise TaskNotFoundError()
+        return Task.from_sql_row(row)
+
     def add_task(self, title):
         task = Task(title)
         sql = """

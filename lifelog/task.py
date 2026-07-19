@@ -8,9 +8,7 @@ class Task:
         self.id = id if id is not None else str(uuid.uuid4())
         self.completed = completed
         self.created_at = (
-            created_at
-            if created_at is not None
-            else datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            created_at if created_at is not None else datetime.now().isoformat()
         )
 
     def to_dict(self):
