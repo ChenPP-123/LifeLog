@@ -15,3 +15,5 @@ lifelog.db
 .vscode/
 
 .idea/
+
+*egg-info/

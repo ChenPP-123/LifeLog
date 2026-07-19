@@ -4,6 +4,8 @@ version = "0.1.0"
 description = "A simple task manager and life logging project"
 requires-python = ">=3.13"
 
+[project.scripts]
+lifelog = "lifelog.__main__:main"
 
 [tool.ruff]
 line-length = 88
